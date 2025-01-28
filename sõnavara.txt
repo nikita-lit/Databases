@@ -1,1 +1,17 @@
-Andmebaas - AB
+Andmebaas (AB) - база данных
+Andmebaaside haldus - администрирование баз данных
+Andmebaasi haldussüsteem (ABHS) - система управления БД (СУБД) 
+  (SQL Server / XAMPP / Oracle / MS Access)
+Andmed - данные
+Tabel - таблица
+Veerg = väli - столбец = поле
+Rida = kirje - строчка = запись
+Päring (query) - запрос
+Laadi alla - скачать
+Laddi üles - закачать
+Rakendus - приложение
+Varundamine (backup) - резервное копирование
+Taastamine - восстановление
+Päringukeel - язык запросов
+Relatsiooni andmebaas (relation) - Реляционная база данных
+Seos - связь

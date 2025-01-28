@@ -48,9 +48,9 @@ UPDATE opilane SET aadress='Tartu' WHERE opilaneID=3;
 --//=========================================================
 
 CREATE TABLE Language(
-	ID int NOT NULL PRIMARY KEY,
+	ID int NOT NULL primary key,
 	code char(3) NOT NULL,
-	name varchar(50) NOT NULL,
+	Language varchar(50) NOT NULL,
 	IsOfficial bit,
 	Percentage smallint,
 );
@@ -84,7 +84,41 @@ SELECT * FROM opilane;
 
 INSERT INTO KeeleValik(valikuNimetus, opilaneID, languageID)
 VALUES 
-	--('valik A', 1, 1),
-	--('valik B', 1, 2),
-	--('valik C', 1, 3),
+	('valik A', 1, 1),
+	('valik B', 1, 2),
+	('valik C', 1, 3),
 	('valik A', 2, 3);
+
+SELECT opilane.opilaneID, opilane.eesnimi, Language.Language
+FROM opilane, Language, KeeleValik 
+	WHERE opilane.opilaneID=KeeleValik.opilaneID AND
+	Language.ID=KeeleValik.languageID;
+
+SELECT *
+FROM opilane, Language, KeeleValik 
+	WHERE opilane.opilaneID=KeeleValik.opilaneID AND
+	Language.ID=KeeleValik.languageID;
+
+--//=========================================================
+--	Ülesanne
+--//=========================================================
+
+CREATE TABLE oppimine(
+	oppimineID int primary key identity(1, 1),
+	aine varchar(50),
+	aasta varchar(4),
+	opetaja varchar(50),
+	opilaneID int,
+	Foreign key (opilaneID) references opilane(opilaneID),
+	hinne int,
+);
+
+INSERT INTO oppimine(aine, aasta, opetaja, opilaneID, hinne)
+VALUES 
+	('Kunst', 
+	'2025', 
+	'Nikita', 
+	10,
+	5);
+
+SELECT * FROM oppimine

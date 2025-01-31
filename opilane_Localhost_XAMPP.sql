@@ -1,10 +1,5 @@
---AB loomine
-
-CREATE DATABASE LitvinenkoBase;
-
-USE LitvinenkoBase;
 CREATE TABLE opilane(
-	opilaneID int primary key identity(1, 1),
+	opilaneID int PRIMARY KEY AUTO_INCREMENT,
 	eesnimi varchar(25) NOT NULL,
 	perenimi varchar(25) NOT NULL,
 	synniaeg date,
@@ -13,50 +8,30 @@ CREATE TABLE opilane(
 	keskmine_hinne decimal(2, 1)
 );
 
---andmete lisamine tabelisse
-INSERT INTO opilane(eesnimi,  perenimi,  synniaeg,  stip, keskmine_hinne) 
-VALUES(
-	'Nikita', 
-	'Nikita', 
-	'2000-12-12', 
-	1,
-	4.5
-);
+--//=========================================================
 
-INSERT INTO opilane(eesnimi,  perenimi,  synniaeg,  stip, keskmine_hinne) 
-VALUES(
-	'Nikita2', 
-	'Nikita2', 
-	'2000-12-12', 
-	1,
-	4.5
-);
+INSERT INTO opilane(eesnimi, perenimi, synniaeg, stip, keskmine_hinne) 
+VALUES 
+    ('Nikita1', 'Nik1', '2001-12-12', 1, 5),
+    ('Nikita2', 'Nik2', '2002-12-12', 0, 3.5), 
+    ('Nikita3', 'Nik3', '2003-12-12', 0, 4), 
+    ('Nikita4', 'Nik4', '2004-12-12', 1, 2),
+    ('Nikita5', 'Nik5', '2005-12-12', 1, 3),
 
-SELECT * FROM opilane;
+--//=========================================================
 
---tabeli kustutamine
---DROP TABLE opilane;
-
-DELETE FROM opilane;
-
---rida kustutamine, kus on opilandID = 2
 DELETE FROM opilane WHERE opilaneID=2;
-
---andmete uuendamine
 UPDATE opilane SET aadress='Tartu' WHERE opilaneID=3;
 
 --//=========================================================
 
 CREATE TABLE Language(
-	ID int NOT NULL primary key,
+	ID int NOT NULL PRIMARY KEY,
 	code char(3) NOT NULL,
 	Language varchar(50) NOT NULL,
 	IsOfficial bit,
 	Percentage smallint
 );
-
---DROP TABLE Language;
-SELECT * FROM Language;
 
 INSERT INTO Language(ID, Code, Language) 
 VALUES
@@ -68,19 +43,13 @@ VALUES
 --//=========================================================
 
 CREATE TABLE KeeleValik(
-	keeleValikID int primary key identity(1,1),
+	keeleValikID int PRIMARY KEY AUTO_INCREMENT,
 	valikuNimetus varchar(10) NOT NULL,
 	opilaneID int,
-	Foreign key (opilaneID) references opilane(opilaneID),
+	FOREIGN KEY (opilaneID) REFERENCES opilane(opilaneID),
 	languageID int,
-	Foreign key (languageID) references Language(ID)
+	FOREIGN KEY (languageID) REFERENCES Language(ID)
 );
-
---DROP TABLE KeeleValik;
-
-SELECT * FROM KeeleValik;
-SELECT * FROM Language;
-SELECT * FROM opilane;
 
 INSERT INTO KeeleValik(valikuNimetus, opilaneID, languageID)
 VALUES 
@@ -104,21 +73,15 @@ FROM opilane, Language, KeeleValik
 --//=========================================================
 
 CREATE TABLE oppimine(
-	oppimineID int primary key identity(1, 1),
+	oppimineID int PRIMARY KEY AUTO_INCREMENT,
 	aine varchar(50),
 	aasta varchar(4),
 	opetaja varchar(50),
 	opilaneID int,
-	Foreign key (opilaneID) references opilane(opilaneID),
+	FOREIGN KEY (opilaneID) REFERENCES opilane(opilaneID),
 	hinne int
 );
 
 INSERT INTO oppimine(aine, aasta, opetaja, opilaneID, hinne)
 VALUES 
-	('Kunst', 
-	'2025', 
-	'Nikita', 
-	10,
-	5);
-
-SELECT * FROM oppimine
+	('Kunst', '2025', 'Nikita', 1, 5);

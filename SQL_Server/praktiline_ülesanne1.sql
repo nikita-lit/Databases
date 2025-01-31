@@ -43,6 +43,8 @@ SELECT * FROM Product;
 INSERT INTO Product(Name, CategoryID, Price) 
 VALUES 
 	('mahl', 1, 1.89),
+	('Coca-Cola', 1, 2),
+	('Fanta', 1, 666.666),
 	('leib', 2, 1.5);
 
 INSERT INTO Product(Name, CategoryID, Price) 
@@ -50,6 +52,7 @@ VALUES
 	('vorst', 1, 999.989999999);
 
 DELETE FROM Product WHERE Name='vorst';
+DROP TABLE Product;
 
 --//=========================================================
 
@@ -84,3 +87,7 @@ INSERT INTO Sale(ProductID, CustomerID, Count, DateOfSale)
 VALUES 
 	(1, 1, 1, '2000-12-12'),
 	(2, 1, 1, '2000-12-13');
+
+--//=========================================================
+
+SELECT * FROM Category, Product, Customer, Sale;

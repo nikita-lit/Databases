@@ -11,7 +11,7 @@ USE epoodlitvinenko;
 --//=========================================================
 
 CREATE TABLE Category(
-	ID int PRIMARY KEY IDENTITY(1, 1),
+	ID int PRIMARY KEY AUTO_INCREMENT,
 	Name varchar(25) UNIQUE NOT NULL
 );
 
@@ -40,7 +40,7 @@ ALTER TABLE Category DROP COLUMN test;
 --//=========================================================
 
 CREATE TABLE Product(
-	ID int PRIMARY KEY IDENTITY(1,1),
+	ID int PRIMARY KEY AUTO_INCREMENT,
 	Name varchar(25) UNIQUE NOT NULL,
 	CategoryID int,
 	FOREIGN KEY (CategoryID) REFERENCES Category(ID),
@@ -66,12 +66,11 @@ VALUES
 --//=========================================================
 
 CREATE TABLE Customer(
-	ID int PRIMARY KEY IDENTITY(1, 1),
+	ID int PRIMARY KEY AUTO_INCREMENT,
 	Name varchar(25) NOT NULL,
-	Contact text
+	Contact varchar(25)
 );
 
---DROP TABLE Customer;
 SELECT * FROM Customer;
 
 INSERT INTO Customer(Name, Contact) 
@@ -87,18 +86,16 @@ VALUES
 --//=========================================================
 
 CREATE TABLE Sale(
-	ID int PRIMARY KEY IDENTITY(1, 1),
+	ID int PRIMARY KEY AUTO_INCREMENT,
 	ProductID int NOT NULL,
 	FOREIGN KEY (ProductID) REFERENCES Product(ID),
 	CustomerID int,
-	--FOREIGN KEY (CustomerID) REFERENCES Customer(ID),
+	FOREIGN KEY (CustomerID) REFERENCES Customer(ID),
 	Count int NOT NULL,
 	DateOfSale date
 );
 
-ALTER TABLE Sale ADD FOREIGN KEY (CustomerID) REFERENCES Customer(ID)
-
---DROP TABLE Sale;
+DROP TABLE Sale;
 SELECT * FROM Sale;
 
 INSERT INTO Sale(ProductID, CustomerID, Count, DateOfSale) 
@@ -108,7 +105,6 @@ VALUES
 	(3, 3, 1, '2000-12-14'),
 	(4, 4, 3, '2020-12-15'),
 	(5, 5, 12, '2077-12-16'),
-	--(5, 6, 666, '1939-09-01'),
 	(3, 5, 15, '2077-12-16');
 
 --//=========================================================

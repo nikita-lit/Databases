@@ -100,7 +100,7 @@ FROM opilane, Language, KeeleValik
 	Language.ID=KeeleValik.languageID;
 
 --//=========================================================
---	Ülesanne
+--	Ãœlesanne
 --//=========================================================
 
 CREATE TABLE oppimine(

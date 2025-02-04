@@ -72,3 +72,29 @@ BEGIN
 END;
 
 EXEC FindCityByFirstChar 'N';
+
+--//=========================================================
+-- tabeli uuendmine
+-- rahvaarv kasvab 10% võrra
+--//=========================================================
+UPDATE City SET Population = Population * 1.1
+
+UPDATE City SET Population = Population * 1.1
+WHERE ID=1;
+
+SELECT * FROM City;
+
+--//=========================================================
+-- Protseduur, mis suurendab rahvaarvu protsentides
+--//=========================================================
+CREATE PROCEDURE IncreasePopulationByPercentage ( @cityID int, @percentage decimal(2,1) ) AS
+BEGIN
+	SELECT * FROM City;
+	UPDATE City SET Population = Population * @percentage
+	WHERE ID=@cityID;
+	SELECT * FROM City;
+END;
+
+--DROP PROCEDURE IncreasePopulationByPercentage
+
+EXEC IncreasePopulationByPercentage 1, 1.2;

@@ -12,7 +12,7 @@ CREATE DATABASE PuuAB;
 USE PuuAB;
 
 CREATE TABLE Puu(
-	ID int IDENTITY(1, 1),
+	ID int PRIMARY KEY IDENTITY(1, 1),
 	PuuNimetus varchar(30),
 	Korgus decimal(5, 1),
 	Hind decimal(5, 2)
@@ -66,3 +66,16 @@ END;
 --DROP PROCEDURE PuuHinnang;
 
 EXEC PuuHinnang 0;
+
+--//=========================================================
+-- Täiendav protseduur
+-- Protseduur, mis kustutab puu id järgi
+--//=========================================================
+CREATE PROCEDURE KustutaPuu ( @puuID int ) AS
+BEGIN
+	SELECT * FROM Puu;
+	DELETE FROM Puu WHERE ID=@puuID;
+	SELECT * FROM Puu;
+END;
+
+EXEC KustutaPuu 2;

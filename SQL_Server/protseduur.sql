@@ -98,3 +98,86 @@ END;
 --DROP PROCEDURE IncreasePopulationByPercentage
 
 EXEC IncreasePopulationByPercentage 1, 1.2;
+
+-- uue veeru lisamine
+ALTER TABLE City ADD test int;
+
+-- veeru kustutamine
+ALTER TABLE City DROP COLUMN test;
+
+--//=========================================================
+-- Protseduur, mis lisab või kustutab veeru
+--//=========================================================
+CREATE PROCEDURE AddDeleteColumn ( @choice varchar(4), @columnName varchar(20), @columnType varchar(20) = NULL ) AS
+BEGIN
+	DECLARE @sqlAction as varchar(max)
+	SET @sqlAction = CASE 
+		WHEN @choice='add' THEN CONCAT('ALTER TABLE City ADD ', @columnName, ' ', @columnType)
+		WHEN @choice='drop' THEN CONCAT('ALTER TABLE City DROP COLUMN ', @columnName)
+	END;
+
+	PRINT @sqlAction;
+	BEGIN
+		EXEC (@sqlAction);
+	END;
+END;
+
+--DROP PROCEDURE AddDeleteColumn;
+
+EXEC AddDeleteColumn 'add', 'test3', 'int';
+EXEC AddDeleteColumn 'drop', 'test3';
+
+--//=========================================================
+-- Protseduur, mis lisab või kustutab veeru tabelis
+--//=========================================================
+CREATE PROCEDURE AddDeleteColumnInTable ( @choice varchar(4), @tabelName varchar(20), @columnName varchar(20), @columnType varchar(20) = NULL ) AS
+BEGIN
+	DECLARE @sqlAction as varchar(max)
+	SET @sqlAction = CASE 
+		WHEN @choice='add' THEN CONCAT('ALTER TABLE ', @tabelName, ' ADD ', @columnName, ' ', @columnType)
+		WHEN @choice='drop' THEN CONCAT('ALTER TABLE ', @tabelName, ' DROP COLUMN ', @columnName)
+	END;
+
+	PRINT @sqlAction;
+	BEGIN
+		EXEC (@sqlAction);
+	END;
+END;
+
+--DROP PROCEDURE AddDeleteColumnInTable;
+
+EXEC AddDeleteColumnInTable 'add', 'City', 'test4', 'int';
+EXEC AddDeleteColumnInTable 'drop', 'City', 'test4';
+
+SELECT * FROM City;
+
+--//=========================================================
+-- Protseduur tingimusega
+--//=========================================================
+CREATE PROCEDURE PopulationRate (@limit int) AS
+BEGIN
+	SELECT Name, Population, IIF(Population < @limit, 'Small city', 'Big city') AS CitySize FROM City;
+END;
+
+--DROP PROCEDURE PopulationRate;
+
+EXEC PopulationRate 100000;
+
+--//=========================================================
+-- Agregaat funktsioonid: SUM(), AVG(), MIN(), MAX(), COUNT()
+--//=========================================================
+
+CREATE PROCEDURE PopulationInfo AS
+BEGIN
+	SELECT 
+	SUM(Population) AS 'Population Sum', 
+	AVG(Population) AS 'Average Population',
+	MIN(Population) AS 'Min Population',
+	MAX(Population) AS 'Max Population',
+	COUNT(*) AS 'Population Column Count'
+	FROM City
+END;
+
+--DROP PROCEDURE PopulationInfo;
+
+EXEC PopulationInfo;

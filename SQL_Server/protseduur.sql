@@ -166,7 +166,6 @@ EXEC PopulationRate 100000;
 --//=========================================================
 -- Agregaat funktsioonid: SUM(), AVG(), MIN(), MAX(), COUNT()
 --//=========================================================
-
 CREATE PROCEDURE PopulationInfo AS
 BEGIN
 	SELECT 

@@ -131,6 +131,16 @@ DROP TABLE Tehtud;
 --//=========================================================
 -- Procedures
 --//=========================================================
+CREATE PROCEDURE AddKasutaja ( @eesnimi varchar(50), @perenimi varchar(50), @email varchar(50) )
+AS
+BEGIN
+	INSERT INTO Kasutaja(eesnimi, perenimi, email)
+	VALUES
+		(@eesnimi, @perenimi, @email);
+END;
+
+EXEC AddKasutaja 'test', 'test perenim', 'email@test.com';
+
 CREATE PROCEDURE UpdateTable ( 
 	@choice varchar(4), 
 	@tabelName varchar(20), 

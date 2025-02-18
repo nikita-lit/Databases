@@ -126,7 +126,15 @@ CREATE TABLE Tehtud(
 	FOREIGN KEY (retsept_id) REFERENCES Retsept(retsept_id)
 );
 
-DROP TABLE Tehtud;
+--DROP TABLE Tehtud;
+
+INSERT INTO Tehtud(tehtud_kp, retsept_id)
+	VALUES
+		('2025-01-01', 1),
+		('2025-02-10', 3),
+		('2025-01-15', 2),
+		('2025-02-18', 5),
+		('2025-03-01', 7);
 
 --//=========================================================
 -- Procedures

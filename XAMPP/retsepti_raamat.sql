@@ -127,3 +127,28 @@ INSERT INTO Tehtud(tehtud_kp, retsept_id)
 		('2025-01-15', 2),
 		('2025-02-18', 5),
 		('2025-03-01', 7);
+
+--//=========================================================
+-- Additional table
+--//=========================================================
+CREATE TABLE Retsepti_hind(
+    hind_id int PRIMARY KEY AUTO_INCREMENT,
+    hinne int,
+    hind_kp date,
+    kasutaja_id int,
+    FOREIGN KEY (kasutaja_id) REFERENCES Kasutaja(kasutaja_id),
+    retsept_id int,
+    FOREIGN KEY (retsept_id) REFERENCES Retsept(retsept_id)
+);
+
+SELECT * FROM Retsepti_hind;
+
+INSERT INTO Retsepti_hind(hinne, hind_kp, kasutaja_id, retsept_id)
+    VALUES
+        (5, '2025-02-20', 1, 1),
+        (4, '2025-02-21', 2, 3),
+        (3, '2025-02-22', 3, 5),
+        (4, '2025-02-23', 4, 7),
+        (5, '2025-02-24', 5, 2);
+
+--Protseduurid retsepti_raamat.md failis

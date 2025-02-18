@@ -1,5 +1,5 @@
 [SQL Server File](SQL_Server/retsepti_raamat.sql) /
-[SQL Server File](XAMPP/retsepti_raamat.sql)
+[XAMPP File](XAMPP/retsepti_raamat.sql)
 
 XAMPP:
 

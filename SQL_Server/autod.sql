@@ -66,3 +66,24 @@ SELECT TOP 5 Mark, Aasta FROM Autod ORDER BY Aasta DESC
 SELECT Mark FROM autod WHERE Mark like 'A%';
 
 SELECT Mark, Aasta FROM Autod WHERE (Aasta BETWEEN 1999 AND 2005) AND Mark LIKE '%a%';
+
+CREATE PROCEDURE GetAutodByAasta( @aasta int ) AS
+BEGIN
+    SELECT * FROM Autod WHERE Aasta = @aasta;
+END;
+
+EXEC GetAutodByAasta 2000;
+
+CREATE PROCEDURE GetAutodByRegNrPrefix( @prefix varchar(10)) AS
+BEGIN
+    SELECT * FROM Autod WHERE RegNr LIKE CONCAT(@prefix, '%');
+END;
+
+EXEC GetAutodByRegNrPrefix '1';
+
+CREATE PROCEDURE GetCarsAfterYear(@aasta int) AS
+BEGIN
+    SELECT * FROM Autod WHERE Aasta > @aasta;
+END;
+
+EXEC GetCarsAfterYear 2000;

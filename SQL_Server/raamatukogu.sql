@@ -105,9 +105,31 @@ INSERT INTO Borrows(studentID, bookID, takenDate, broughtDate)
 	(4, 3, '2025-03-10', '2025-03-15'),
 	(5, 4, '2025-03-10', '2025-03-12'),
 	(6, 5, '2025-03-5', '2025-03-7'),
-	(3, 2, '2025-03-10', '2025-03-11');
+	(1, 4, '2025-03-10', '2025-03-11'),
+	(1, 1, '2025-03-10', '2025-03-11'),
+	(1, 2, '2025-03-10', '2025-03-11');
+
+--DROP TABLE Borrows
 
 SELECT * FROM Borrows
+
+SELECT Students.name + ' ' + Students.surname AS Student_Name, Books.name AS Book_Name
+FROM Students 
+INNER JOIN Borrows ON Students.studentID = Borrows.studentID
+INNER JOIN Books ON Borrows.bookID = Books.bookID;
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --//=========================================================
 SELECT books.name, books.authorID

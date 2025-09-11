@@ -22,9 +22,9 @@ SELECT * FROM toode;
 INSERT INTO toodekategooria(toodekategooria) 
 	VALUES 
 		('Elektroonika'), 
-		('Mööbel'), 
+		('MÃ¶Ã¶bel'), 
 		('Riided'),
-		('Köögiviljad'),
+		('KÃ¶Ã¶giviljad'),
 		('Liha');
 
 INSERT INTO toodekategooria(toodekategooria) 
@@ -40,7 +40,7 @@ INSERT INTO toode(toodenimetus, hind, toodekategooriaId)
 		('Diivan', 300, 2),
 		('Tool', 100, 2),
 
-		('T-särk', 40, 3),
+		('T-sÃ¤rk', 40, 3),
 		('Jope', 90, 3),
 
 		('Tomat', 2, 4),
@@ -65,4 +65,5 @@ SELECT toodekategooria FROM toodekategooria
 	LEFT JOIN toode t ON t.toodekategooriaId=toodekategooria.toodekategooriaId WHERE t.toodekategooriaId IS NULL;
 
 SELECT toodenimetus, hind FROM toode 
+
 	WHERE hind > (SELECT AVG(hind) FROM toode);

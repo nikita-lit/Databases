@@ -16,15 +16,21 @@ create table toode(
 	foreign key (toodekategooriaId) references toodekategooria(toodekategooriaId)
 );
 
+-- tabeli struktuuri muutmine, uue veergu lisamine
+ALTER TABLE toode ADD aktiivne bit;
+
+UPDATE toode SET aktiivne = 1;
+UPDATE toode SET aktiivne = 0 WHERE toodekategooriaId = 1;
+
 SELECT * FROM toodekategooria;
 SELECT * FROM toode;
 
 INSERT INTO toodekategooria(toodekategooria) 
 	VALUES 
 		('Elektroonika'), 
-		('MÃ¶Ã¶bel'), 
+		('Mööbel'), 
 		('Riided'),
-		('KÃ¶Ã¶giviljad'),
+		('Köögiviljad'),
 		('Liha');
 
 INSERT INTO toodekategooria(toodekategooria) 
@@ -40,7 +46,7 @@ INSERT INTO toode(toodenimetus, hind, toodekategooriaId)
 		('Diivan', 300, 2),
 		('Tool', 100, 2),
 
-		('T-sÃ¤rk', 40, 3),
+		('T-särk', 40, 3),
 		('Jope', 90, 3),
 
 		('Tomat', 2, 4),
@@ -65,5 +71,117 @@ SELECT toodekategooria FROM toodekategooria
 	LEFT JOIN toode t ON t.toodekategooriaId=toodekategooria.toodekategooriaId WHERE t.toodekategooriaId IS NULL;
 
 SELECT toodenimetus, hind FROM toode 
-
 	WHERE hind > (SELECT AVG(hind) FROM toode);
+
+--1. Loo vaade, mis kuvab ainult toodete nime ja hinna.
+CREATE VIEW KuvaToodete AS
+	SELECT toodenimetus, hind FROM toode;
+
+SELECT * FROM KuvaToodete;
+
+--2. Loo vaade, mis näitab kõiki tooteid koos kategooria nimega.
+CREATE VIEW KuvaToodeteKategooriaga AS
+	SELECT toodenimetus, hind, tk.toodekategooria FROM toode
+		INNER JOIN toodekategooria tk ON toode.toodekategooriaId=tk.toodekategooriaId;
+
+SELECT * FROM KuvaToodeteKategooriaga;
+
+--3. Loo vaade, mis kuvab ainult aktiivseid (nt saadaval olevaid) tooteid.
+CREATE VIEW KuvaAinultAktiivseidTooteid AS
+	SELECT * FROM toode WHERE toode.aktiivne = 1;
+
+SELECT * FROM KuvaAinultAktiivseidTooteid;
+
+
+
+
+
+--4. Loo vaade, mis koondab info: kategooria nimi, toodete arv, minimaalne ja maksimaalne hind.
+CREATE VIEW KategooriadInfo AS
+	SELECT toodekategooria, 
+		COUNT(*) AS 'Toodete Arv', 
+		CAST(MIN(t.hind) as decimal(5, 1)) AS 'Min Hind', 
+		CAST(MAX(t.hind) as decimal(5, 1)) AS 'Max Hind' 
+		FROM toodekategooria tk
+		INNER JOIN toode t ON t.toodekategooriaId=tk.toodekategooriaId GROUP BY tk.toodekategooria;
+
+DROP VIEW KategooriadInfo;
+
+SELECT * FROM KategooriadInfo;
+
+--5. Loo vaade, mis arvutab toode käibemaksu (24%) ja iga toode hind käibemaksuga.
+CREATE VIEW ArvutaToodeKäibemaksu AS
+	SELECT toodenimetus, 
+		CAST(hind * 0.24 as decimal(5, 1)) AS 'Toode käibemaks', 
+		CAST(hind * 1.24 as decimal(5, 1)) AS 'Toode hind käibemaksuga', 
+		CAST(hind as decimal(5, 1)) AS 'Toode hind käibemaksuta' 
+	FROM toode;
+
+DROP VIEW ArvutaToodeKäibemaksu
+SELECT * FROM ArvutaToodeKäibemaksu;
+
+--//=========================================
+-- Protseduurid 
+--//=========================================
+
+--1. Loo protseduur, mis lisab uue toote (sisendparameetrid: tootenimi, hind, kategooriaID).
+CREATE PROCEDURE LisaToode ( @tootenimi varchar(100), @hind decimal(5, 2), @kategooriaID int, @aktiivne bit ) AS
+BEGIN
+	INSERT INTO toode(toodenimetus, hind, toodekategooriaId, aktiivne)
+		VALUES (@tootenimi, @hind, @kategooriaID, @aktiivne);
+
+	SELECT * FROM toode;
+END;
+
+EXEC LisaToode 'Sibul2', 1.5, 4, 1;
+
+--2. Loo protseduur, mis uuendab toote hinda vastavalt tooteID-le.
+CREATE PROCEDURE UuendaToodeHind ( @toodeID int, @uusHind decimal(5, 2) ) AS
+BEGIN
+	SELECT * FROM toode WHERE toodeId = @toodeId;
+	UPDATE toode SET hind = @uusHind WHERE toodeId = @toodeId;
+	SELECT * FROM toode WHERE toodeId = @toodeId;
+END;
+
+EXEC UuendaToodeHind 14, 1;
+
+--3. Loo protseduur, mis kustutab toote ID järgi.
+CREATE PROCEDURE KustutaToode ( @toodeID int ) AS
+BEGIN
+	SELECT * FROM toode;
+	DELETE toode WHERE toodeId = @toodeID;
+	SELECT * FROM toode ;
+END;
+
+EXEC KustutaToode 14;
+
+--4. Loo protseduur, mis tagastab kõik tooted valitud kategooriaID järgi.
+CREATE PROCEDURE KõikTootedKategoorias ( @kategooriaID int ) AS
+BEGIN
+	SELECT toodenimetus, tk.toodekategooria, hind FROM toode 
+	INNER JOIN toodekategooria tk ON toode.toodekategooriaId=tk.toodekategooriaId 
+	WHERE toode.toodekategooriaId = @kategooriaID;
+END;
+
+EXEC KõikTootedKategoorias 2;
+EXEC KõikTootedKategoorias 1;
+
+--5. Loo protseduur, mis tõstab kõigi toodete hindu kindlas kategoorias kindla protsendi võrra.
+CREATE PROCEDURE UuendaToodeteHindKategoorias ( @kategooriaID int, @protsenti decimal(5, 2) ) AS
+BEGIN
+	EXEC KõikTootedKategoorias @kategooriaID;
+	UPDATE toode SET hind = hind * (1 + @protsenti / 100) WHERE toodekategooriaId = @kategooriaID;
+	EXEC KõikTootedKategoorias @kategooriaID;
+END;
+
+EXEC UuendaToodeteHindKategoorias 2, 15;
+
+--6. Loo protseduur, mis kuvab kõige kallima toote kogu andmebaasis.
+CREATE PROCEDURE KõigeKallimaToote AS
+BEGIN
+	SELECT TOP 1 toodenimetus, hind, tk.toodekategooria FROM toode 
+	INNER JOIN toodekategooria tk ON toode.toodekategooriaId=tk.toodekategooriaId
+	ORDER BY hind DESC;
+END;
+
+EXEC KõigeKallimaToote;

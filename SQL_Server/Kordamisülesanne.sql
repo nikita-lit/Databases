@@ -28,9 +28,9 @@ SELECT * FROM toode;
 INSERT INTO toodekategooria(toodekategooria) 
 	VALUES 
 		('Elektroonika'), 
-		('Mˆˆbel'), 
+		('M√∂√∂bel'), 
 		('Riided'),
-		('Kˆˆgiviljad'),
+		('K√∂√∂giviljad'),
 		('Liha');
 
 INSERT INTO toodekategooria(toodekategooria) 
@@ -46,7 +46,7 @@ INSERT INTO toode(toodenimetus, hind, toodekategooriaId)
 		('Diivan', 300, 2),
 		('Tool', 100, 2),
 
-		('T-s‰rk', 40, 3),
+		('T-s√§rk', 40, 3),
 		('Jope', 90, 3),
 
 		('Tomat', 2, 4),
@@ -79,7 +79,7 @@ CREATE VIEW KuvaToodete AS
 
 SELECT * FROM KuvaToodete;
 
---2. Loo vaade, mis n‰itab kıiki tooteid koos kategooria nimega.
+--2. Loo vaade, mis n√§itab k√µiki tooteid koos kategooria nimega.
 CREATE VIEW KuvaToodeteKategooriaga AS
 	SELECT toodenimetus, hind, tk.toodekategooria FROM toode
 		INNER JOIN toodekategooria tk ON toode.toodekategooriaId=tk.toodekategooriaId;
@@ -109,16 +109,16 @@ DROP VIEW KategooriadInfo;
 
 SELECT * FROM KategooriadInfo;
 
---5. Loo vaade, mis arvutab toode k‰ibemaksu (24%) ja iga toode hind k‰ibemaksuga.
-CREATE VIEW ArvutaToodeK‰ibemaksu AS
+--5. Loo vaade, mis arvutab toode k√§ibemaksu (24%) ja iga toode hind k√§ibemaksuga.
+CREATE VIEW ArvutaToodeK√§ibemaksu AS
 	SELECT toodenimetus, 
-		CAST(hind * 0.24 as decimal(5, 1)) AS 'Toode k‰ibemaks', 
-		CAST(hind * 1.24 as decimal(5, 1)) AS 'Toode hind k‰ibemaksuga', 
-		CAST(hind as decimal(5, 1)) AS 'Toode hind k‰ibemaksuta' 
+		CAST(hind * 0.24 as decimal(5, 1)) AS 'Toode k√§ibemaks', 
+		CAST(hind * 1.24 as decimal(5, 1)) AS 'Toode hind k√§ibemaksuga', 
+		CAST(hind as decimal(5, 1)) AS 'Toode hind k√§ibemaksuta' 
 	FROM toode;
 
-DROP VIEW ArvutaToodeK‰ibemaksu
-SELECT * FROM ArvutaToodeK‰ibemaksu;
+DROP VIEW ArvutaToodeK√§ibemaksu
+SELECT * FROM ArvutaToodeK√§ibemaksu;
 
 --//=========================================
 -- Protseduurid 
@@ -145,7 +145,7 @@ END;
 
 EXEC UuendaToodeHind 14, 1;
 
---3. Loo protseduur, mis kustutab toote ID j‰rgi.
+--3. Loo protseduur, mis kustutab toote ID j√§rgi.
 CREATE PROCEDURE KustutaToode ( @toodeID int ) AS
 BEGIN
 	SELECT * FROM toode;
@@ -155,33 +155,90 @@ END;
 
 EXEC KustutaToode 14;
 
---4. Loo protseduur, mis tagastab kıik tooted valitud kategooriaID j‰rgi.
-CREATE PROCEDURE KıikTootedKategoorias ( @kategooriaID int ) AS
+--4. Loo protseduur, mis tagastab k√µik tooted valitud kategooriaID j√§rgi.
+CREATE PROCEDURE K√µikTootedKategoorias ( @kategooriaID int ) AS
 BEGIN
 	SELECT toodenimetus, tk.toodekategooria, hind FROM toode 
 	INNER JOIN toodekategooria tk ON toode.toodekategooriaId=tk.toodekategooriaId 
 	WHERE toode.toodekategooriaId = @kategooriaID;
 END;
 
-EXEC KıikTootedKategoorias 2;
-EXEC KıikTootedKategoorias 1;
+EXEC K√µikTootedKategoorias 2;
+EXEC K√µikTootedKategoorias 1;
 
---5. Loo protseduur, mis tıstab kıigi toodete hindu kindlas kategoorias kindla protsendi vırra.
+--5. Loo protseduur, mis t√µstab k√µigi toodete hindu kindlas kategoorias kindla protsendi v√µrra.
 CREATE PROCEDURE UuendaToodeteHindKategoorias ( @kategooriaID int, @protsenti decimal(5, 2) ) AS
 BEGIN
-	EXEC KıikTootedKategoorias @kategooriaID;
+	EXEC K√µikTootedKategoorias @kategooriaID;
 	UPDATE toode SET hind = hind * (1 + @protsenti / 100) WHERE toodekategooriaId = @kategooriaID;
-	EXEC KıikTootedKategoorias @kategooriaID;
+	EXEC K√µikTootedKategoorias @kategooriaID;
 END;
 
-EXEC UuendaToodeteHindKategoorias 2, 15;
+EXEC UuendaToodeteHindKategoorias 2, 5;
 
---6. Loo protseduur, mis kuvab kıige kallima toote kogu andmebaasis.
-CREATE PROCEDURE KıigeKallimaToote AS
+--6. Loo protseduur, mis kuvab k√µige kallima toote kogu andmebaasis.
+CREATE PROCEDURE K√µigeKallimaToote AS
 BEGIN
 	SELECT TOP 1 toodenimetus, hind, tk.toodekategooria FROM toode 
 	INNER JOIN toodekategooria tk ON toode.toodekategooriaId=tk.toodekategooriaId
 	ORDER BY hind DESC;
 END;
 
-EXEC KıigeKallimaToote;
+EXEC K√µigeKallimaToote;
+
+
+GRANT INSERT, UPDATE, DELETE ON toode TO tootehaldur;
+GRANT INSERT, UPDATE, SELECT ON toodekategooria TO kataloogihaldur;
+
+GRANT SELECT ON toode TO vaataja;
+GRANT SELECT ON toodekategooria TO vaataja;
+
+
+SELECT 
+	CONCAT(table_schema, '.', table_name) AS scope,
+	grantee,
+	privilege_type
+FROM INFORMATION_SCHEMA.TABLE_PRIVILEGES
+
+
+
+
+BEGIN TRANSACTION;
+
+INSERT INTO toodekategooria (toodekategooria)
+VALUES ('Meelelahutus');
+
+INSERT INTO toode (toodenimetus, hind, toodekategooriaId)
+VALUES ('Nutitelefon', 500, 1);
+
+SELECT * FROM toodekategooria;
+SELECT * FROM toode;
+
+ROLLBACK;
+
+SELECT * FROM toodekategooria;
+SELECT * FROM toode;
+
+
+
+
+BEGIN TRANSACTION;
+
+SAVE TRANSACTION sp1;
+
+BEGIN TRY
+    INSERT INTO toode (toodenimetus, hind, toodekategooriaId)
+		VALUES ('Telefon', 150, 1);
+END TRY
+
+BEGIN CATCH
+	PRINT 'Viga'
+    ROLLBACK TRANSACTION sp1;
+END CATCH
+
+INSERT INTO toode (toodenimetus, hind, toodekategooriaId)
+	VALUES ('M√ºts', 150, 3);
+
+COMMIT;
+
+SELECT * FROM toode;
